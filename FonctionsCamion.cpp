@@ -20,18 +20,23 @@ using namespace ValidImma;
  */
 Camion::Camion(const std::string& p_niv, const std::string& p_immatriculation, double p_poids, int p_nbEssieux): Vehicule (p_niv, p_immatriculation)
 {
-   //VinValidator::validerNiv(p_niv) && 
-   //ValidImma::validerImmatriculationCamion(p_immatriculation) &&
-   if ( p_poids > 3000 && p_nbEssieux >= 2)
-{ 
-    m_niv = p_niv;
-    m_immatriculation = p_immatriculation;
-    m_poids = p_poids;
-    m_nbEssieux = p_nbEssieux;
+if (!VinValidator::validerNiv(p_niv)) {
+    throw std::runtime_error("Invalid NIV");
 }
-else {
-    throw std::runtime_error("Something wrong");
+if (!ValidImma::validerImmatriculationCamion(p_immatriculation)) {
+    throw std::runtime_error("Invalid Immatriculation");
 }
+if (p_poids <= 3000) {
+    throw std::runtime_error("Invalid Poids");
+}
+if (p_nbEssieux < 2) {
+    throw std::runtime_error("Invalid NbEssieux");
+}
+
+m_niv = p_niv;
+m_immatriculation = p_immatriculation;
+m_poids = p_poids;
+m_nbEssieux = p_nbEssieux;
 
 }
 

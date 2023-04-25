@@ -6,6 +6,8 @@
 #include <sstream>
 #include <string>
 #include <regex>
+#include <unordered_map>
+
 #include "Vehicule.h"
 #include "Camion.h"
 #include "VehiculePromenade.h"
@@ -18,7 +20,7 @@ using namespace std;
  */
 namespace VinValidator {
     
-int vin_weight(int position) {
+/*int vin_weight(int position) {
     int weights[] = {8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2};
     return weights[position];
 }
@@ -47,10 +49,7 @@ char calculate_check_digit(const std::string& p_niv) {
         int weight = vin_weight(i);
         int char_value = vin_char_value(p_niv[i]);
         sum += weight * char_value;
-        std::cout << "Position: " << i
-                  << ", Weight: " << weight
-                  << ", Char Value: " << char_value
-                  << ", Sum: " << sum << std::endl;
+        
     }
     int remainder = sum % 11;
     if (remainder == 10) {
@@ -68,36 +67,60 @@ int char_to_int(char ch) {
         return -1; // Return an error value if the character is not a valid digit or letter
     }
 }
-
+*/
 bool validerNiv(const std::string& p_niv) {
-    int len = p_niv.length();
-    if (len != 17) {
-        std::cout << "NIV length is incorrect." << std::endl;
+    const int longueurNiv = 17;
+    const int positionCheckDigit = 8;
+    const std::unordered_map<char, int> transco = {
+        {'A', 1}, {'B', 2}, {'C', 3}, {'D', 4}, {'E', 5}, {'F', 6}, {'G', 7}, {'H', 8},
+        {'J', 1}, {'K', 2}, {'L', 3}, {'M', 4}, {'N', 5}, {'P', 7}, {'R', 9},
+        {'S', 2}, {'T', 3}, {'U', 4}, {'V', 5}, {'W', 6}, {'X', 7}, {'Y', 8}, {'Z', 9},
+        {'1', 1}, {'2', 2}, {'3', 3}, {'4', 4}, {'5', 5}, {'6', 6}, {'7', 7}, {'8', 8}, {'9', 9}, {'0', 0}
+    };
+    const int poids[] = {8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2};
+
+    // Vérifier la longueur du NIV
+    if (p_niv.length() != longueurNiv) {
         return false;
     }
-    char check_digit = VinValidator::calculate_check_digit(p_niv);
-    if (p_niv[8] != check_digit && p_niv[9] != check_digit) {
-        std::cout << "NIV check digit is incorrect. Expected: " << check_digit << ", Found: " << p_niv[8] << " or " << p_niv[9] << std::endl;
-        return false;
+
+    // Calculer le caractère de contrôle
+    int somme = 0;
+    for (int i = 0; i < longueurNiv; ++i) {
+        char c = p_niv[i];
+        if (transco.count(c) == 0) {
+            return false;
+        }
+        somme += transco.at(c) * poids[i];
     }
-   unsigned int sum = 0;
-for (size_t i = 0; i < p_niv.size(); ++i) {
-    int char_value = char_to_int(p_niv[i]);
-    int weight = vin_weight(i);
-    sum += char_value * weight;
-    std::cout << "Position: " << i << ", Char: " << p_niv[i] << ", Char Value: " << char_value << ", Weight: " << weight << ", Sum: " << sum << std::endl;
-}
 
-    return true;
+    int check_digit = somme % 11;
+    char check_char = (check_digit == 10) ? 'X' : '0' + check_digit;
+
+    return p_niv[positionCheckDigit] == check_char;
 }
 
 }
+
 
 /**
  * @namespace ValidImma
  * @brief Contains utility functions*/
 namespace ValidImma 
 {    
+    
+/**
+ * @class Vehicule
+ * @brief Represents a generic vehicle.
+ */
+bool validerImmatriculationCamion(const std::string& p_immatriculation) {
+    
+    std::string regex_pattern = "^[A-Z]\\d{6}$";
+    
+    std::regex regex_obj(regex_pattern);
+    
+    return std::regex_match(p_immatriculation, regex_obj);
+}   
 
 bool validerImmatriculationPromenade(const std::string& p_immatriculation) {
     bool estValide = true;
@@ -126,20 +149,7 @@ bool validerImmatriculationPromenade(const std::string& p_immatriculation) {
         }
     }
     return estValide;
-}
-
-/**
- * @class Vehicule
- * @brief Represents a generic vehicle.
- */
-bool validerImmatriculationCamion(const std::string& p_immatriculation) {
-    
-    std::string regex_pattern = "^[A-Z]{3}\\d{3}$";
-    
-    std::regex regex_obj(regex_pattern);
-    
-    return std::regex_match(p_immatriculation, regex_obj);
-}    
+} 
 }
 
 /////////////// Vehicule methods
