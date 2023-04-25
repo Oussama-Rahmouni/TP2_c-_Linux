@@ -73,7 +73,16 @@ protected:
     virtual void assignerImmatriculation(const std::string& p_immatriculation) = 0; //hedhi tnajem tkoun feha definition kima fl req format
 };
 
+/**
+ * @brief Classe représentant le proprietaire.
+ */
 class Proprietaire {
+    /**
+     * @brief Constructeur de la classe Proprietaire.
+     * 
+     * @param m_nom Le nom.
+     * @param m_prenom Le prenom.
+     */ 
 private:
     std::string m_nom;
     std::string m_prenom;
@@ -110,7 +119,6 @@ public:
         }
     }
 
-  
     Proprietaire& operator=(const Proprietaire& other) {
         if (this == &other) {
             return *this;
@@ -123,7 +131,6 @@ public:
         for (const auto& vehicule : other.m_vehicules) {
             m_vehicules.push_back(vehicule->clone());
         }
-
         return *this;
     }
 };

@@ -15,7 +15,7 @@ using namespace ValidImma;
 
 /**
  * @class VehiculePromenade
- * @brief Represents a passenger vehicle.
+ * @brief Represents a passenger vehicule.
  */
 VehiculePromenade::VehiculePromenade(const std::string& p_niv, const std::string& p_immatriculation, int p_nbPlaces): Vehicule (p_niv, p_immatriculation)
 {

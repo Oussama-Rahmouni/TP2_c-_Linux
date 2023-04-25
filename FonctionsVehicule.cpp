@@ -18,60 +18,12 @@ using namespace std;
  * @namespace VinValidator
  * @brief Contains utility functions for validating Vehicle Identification Numbers (VINs).
  */
-namespace VinValidator {
-    
-/*int vin_weight(int position) {
-    int weights[] = {8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2};
-    return weights[position];
-}
-
-
-
-int vin_char_value(char c) {
-    if (isdigit(c)) {
-        return c - '0';
-    }
-    if (c >= 'A' && c <= 'I') {
-        return (c - 'A') + 1;
-    }
-    if (c >= 'J' && c <= 'R') {
-        return (c - 'J') + 1;
-    }
-    if (c >= 'S' && c <= 'Z') {
-        return (c - 'S') + 2;
-    }
-    return 0;
-}
- 
-char calculate_check_digit(const std::string& p_niv) {
-    int sum = 0;
-    for (int i = 0; i < 17; ++i) {
-        int weight = vin_weight(i);
-        int char_value = vin_char_value(p_niv[i]);
-        sum += weight * char_value;
-        
-    }
-    int remainder = sum % 11;
-    if (remainder == 10) {
-        return 'X';
-    }
-    return remainder + '0';
-}
-
-int char_to_int(char ch) {
-    if (ch >= '0' && ch <= '9') {
-        return ch - '0';
-    } else if (ch >= 'A' && ch <= 'Z') {
-        return ch - 'A' + 10;
-    } else {
-        return -1; // Return an error value if the character is not a valid digit or letter
-    }
-}
-*/
+namespace VinValidator 
+{
 bool validerNiv(const std::string& p_niv) {
     const int longueurNiv = 17;
     const int positionCheckDigit = 8;
-    const std::unordered_map<char, int> transco = {
+    const std::unordered_map<char, int> monMap = {
         {'A', 1}, {'B', 2}, {'C', 3}, {'D', 4}, {'E', 5}, {'F', 6}, {'G', 7}, {'H', 8},
         {'J', 1}, {'K', 2}, {'L', 3}, {'M', 4}, {'N', 5}, {'P', 7}, {'R', 9},
         {'S', 2}, {'T', 3}, {'U', 4}, {'V', 5}, {'W', 6}, {'X', 7}, {'Y', 8}, {'Z', 9},
@@ -79,19 +31,17 @@ bool validerNiv(const std::string& p_niv) {
     };
     const int poids[] = {8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2};
 
-    // Vérifier la longueur du NIV
+    
     if (p_niv.length() != longueurNiv) {
         return false;
     }
-
-    // Calculer le caractère de contrôle
     int somme = 0;
     for (int i = 0; i < longueurNiv; ++i) {
         char c = p_niv[i];
-        if (transco.count(c) == 0) {
+        if (monMap.count(c) == 0) {
             return false;
         }
-        somme += transco.at(c) * poids[i];
+        somme += monMap.at(c) * poids[i];
     }
 
     int check_digit = somme % 11;
@@ -101,7 +51,6 @@ bool validerNiv(const std::string& p_niv) {
 }
 
 }
-
 
 /**
  * @namespace ValidImma
@@ -152,7 +101,6 @@ bool validerImmatriculationPromenade(const std::string& p_immatriculation) {
 } 
 }
 
-/////////////// Vehicule methods
 Vehicule::Vehicule(const std::string& niv, const std::string& immatriculation)
 {
     if (VinValidator::validerNiv(niv)) {
@@ -172,15 +120,6 @@ std::string Vehicule::getImmatriculation() const
 {
     return m_immatriculation;
 }
-
-/*
-void Vehicule::setImmatriculation(const std::string& p_immatriculation) {
-    PRECONDITION(!p_immatriculation.empty());
-    m_immatriculation = p_immatriculation;
-    POSTCONDITION(m_immatriculation == p_immatriculation);
-    INVARIANT(!m_niv.empty());
-}
-*/
  
 void Vehicule::verifieInvariant() const 
 {
